@@ -33,11 +33,12 @@ main_regions = ([waste.sub("", e) for e in main_regions])
 main_regions = main_regions[:-2]
 # print("liste des régions principales: ", main_regions)
 
+
 secondary_regions = [e.text for e in soup.find("div", {"class": "mw-parser-output"}).find_all(
     ["h3", "span", {"class": "mw-headline"}, "a"], recursive=False)]
 secondary_regions = ([waste.sub("", e) for e in secondary_regions])
 secondary_regions = secondary_regions[:-2]
-print("liste des régions secondaires: ", secondary_regions)
+# print("liste des régions secondaires: ", secondary_regions)
 
 all_abbayes = [e.text for e in soup.find("div", {"class": "mw-parser-output"}).find_all(
     ["ul", "li"])]
@@ -48,19 +49,13 @@ all_abbayes = [e.replace("esiècle", "ème siècle") for e in all_abbayes]
 all_abbayes = [e.replace("(royale, archives AD)", "") for e in all_abbayes]
 all_abbayes = [e.replace("(archives AD)", "") for e in all_abbayes]
 all_abbayes = list(filter(abbayes_pattern.match, all_abbayes))
-print("liste des abbayes francaise: ", all_abbayes)
+# print("liste des abbayes francaise: ", all_abbayes)
 
 all_href = [a['href'] for a in soup.find("div", {"class": "mw-parser-output"}).find_all(["ul", "li", "a"], href=True)]
 abbayes_href_pattern = re.compile(r"\/wiki\/Abbaye_[\w_-]+")
 abbaye_href_filtre = list(filter(abbayes_href_pattern.match, all_href))
 abbaye_href_filtre = [string_ref + e for e in abbaye_href_filtre]
 # print("liste des tous les liens http contenant les informations historiques: ", abbaye_href_filtre)
-
-# print("dictionnaire représentatif de la répartition géographique des abbayes: ",
-#       dictionary_abbayes_per_secondary_region)
-# for e in main_regions:
-#     API_list.append(dictionary_abbayes_per_secondary_region)
-# print(API_list)
 
 dictionary_main_regions_secondary_regions[main_regions[0]] = secondary_regions[:13]
 dictionary_main_regions_secondary_regions[main_regions[1]] = secondary_regions[14:21]
@@ -76,13 +71,13 @@ dictionary_main_regions_secondary_regions[main_regions[11]] = secondary_regions[
 dictionary_main_regions_secondary_regions[main_regions[12]] = secondary_regions[88:]
 print("dictionnaire géographique: ", dictionary_main_regions_secondary_regions)
 
-dictionary_secondary_regions_abbayes[secondary_regions[0]]=all_abbayes[0:7]
-dictionary_secondary_regions_abbayes[secondary_regions[1]]=all_abbayes[8]
-dictionary_secondary_regions_abbayes[secondary_regions[2]]=all_abbayes[9:16]
-dictionary_secondary_regions_abbayes[secondary_regions[3]]=all_abbayes[16:20]
-dictionary_secondary_regions_abbayes[secondary_regions[4]]=all_abbayes[20:23]
-dictionary_secondary_regions_abbayes[secondary_regions[5]]=all_abbayes[23:29]
-print(dictionary_secondary_regions_abbayes)
+dictionary_secondary_regions_abbayes[secondary_regions[0]] = all_abbayes[0:7]
+dictionary_secondary_regions_abbayes[secondary_regions[1]] = all_abbayes[8]
+dictionary_secondary_regions_abbayes[secondary_regions[2]] = all_abbayes[9:16]
+dictionary_secondary_regions_abbayes[secondary_regions[3]] = all_abbayes[16:20]
+dictionary_secondary_regions_abbayes[secondary_regions[4]] = all_abbayes[20:23]
+dictionary_secondary_regions_abbayes[secondary_regions[5]] = all_abbayes[23:29]
+# print(dictionary_secondary_regions_abbayes)
 
 for e in abbaye_href_filtre:
     soup = BeautifulSoup(requests.get(e).text, 'lxml')
@@ -104,3 +99,5 @@ for e in abbaye_href_filtre:
     for e in abbaye_data_list_text:
         all_data_abbaye_list.append(e)
         # print(all_data_abbaye_list)
+
+dictionary_data_per_abbaye = dict(zip(all_abbayes, all_data_abbaye_list))
